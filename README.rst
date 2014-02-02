@@ -1,12 +1,43 @@
 django-pyscss
 -------------
 
-A collection of tools for making it easier to use PyScss within Django.
+A collection of tools for making it easier to use pyScss within Django.
+
+Why do we need this?
+====================
+
+This app smooths over a lot of things when dealing with pyScss in Django.  It
+
+- Overwrites the import system to use Django's staticfiles app.  This way you
+  can import SCSS files from any app (or any file that's findable by the
+  STATICFILES_FINDERS) with no hassle.
+
+- Configures pyScss to work with the staticfiles app for it's image functions
+  (e.g. inline-image and sprite-map).
+
+- It provides a django-compressor precompile filter class so that you can
+  easily use pyScss with django-compressor without having to bust out to the
+  shell.  This has the added benefit of removing the need to configure pyScss
+  through its command-line arguments AND makes it possible for the exceptions
+  and warnings that pyScss emits to bubble up to your process so that you can
+  actually know what's going on.
+
+
+Rendering SCSS manually
+=======================
+
+You can render SCSS manually from a string like this::
+
+    from django_pyscss.scss import DjangoScss
+
+    compiler = DjangoScss()
+    compiler.compile(scss_string=".foo { color: green; }")
+
 
 .. class:: django_pyscss.scss.DjangoScss
 
     A subclass of :class:`scss.Scss` that uses the Django staticfiles storage
-    and finders instead of the filesystem.  This obseletes the load_paths
+    and finders instead of the filesystem.  This obsoletes the load_paths
     option that was present previously by searching instead in your staticfiles
     directories.
 
