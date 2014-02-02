@@ -41,8 +41,7 @@ class DjangoScss(Scss):
         except NotImplementedError:
             # remote storages don't implement path
             pass
-        finally:
-            return filename, staticfiles_storage
+        return filename, staticfiles_storage
 
     def get_file_from_finders(self, filename):
         return find_one_file(filename)
