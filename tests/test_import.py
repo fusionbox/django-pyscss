@@ -40,18 +40,26 @@ IMPORT_APP2 = """
 APP2_CONTENTS = FOO_CONTENTS + APP1_CONTENTS
 
 
+def clean_css(string):
+    # The output of the compiled CSS doesn't have a newline between the ; and
+    # the } for some reason.
+    return string.strip() \
+        .replace('\n', '') \
+        .replace('; ', ';')
+
+
 class ImportTestMixin(object):
     def test_import_from_staticfiles_dirs(self):
         actual = compile_string(IMPORT_FOO)
-        self.assertEqual(actual.strip(), FOO_CONTENTS.strip())
+        self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_import_from_app(self):
         actual = compile_string(IMPORT_APP1)
-        self.assertEqual(actual.strip(), APP1_CONTENTS.strip())
+        self.assertEqual(clean_css(actual), clean_css(APP1_CONTENTS))
 
     def test_imports_within_file(self):
         actual = compile_string(IMPORT_APP2)
-        self.assertEqual(actual.strip(), APP2_CONTENTS.strip())
+        self.assertEqual(clean_css(actual), clean_css(APP2_CONTENTS))
 
 
 @override_settings(DEBUG=True)

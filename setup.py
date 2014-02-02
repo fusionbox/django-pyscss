@@ -14,7 +14,7 @@ def read(fname):
 
 install_requires = [
     'Django>=1.3',
-    'PyScss>=1.1.5',
+    'PyScss>=1.2.0',
 ]
 
 version = (0, 0, 1, 'final')
