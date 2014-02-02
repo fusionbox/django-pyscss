@@ -37,6 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'compressor',
+
     'testproject.testapp1',
     'testproject.testapp2',
 )
@@ -87,4 +89,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, '..', 'tmp', 'static')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'testproject', 'static'),
+)
+
+# It doesn't seem like django-compressor respects override_settings
+COMPRESS_ENABLED = True
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_pyscss.compressor.DjangoScssFilter'),
+)
+
+STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )

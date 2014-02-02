@@ -1,33 +1,25 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
-import fnmatch
 
-from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 
 from scss import (
-    Scss, dequote, log, SourceFile, SassRule,
+    Scss, dequote, log, SourceFile, SassRule, config,
 )
 
-
-def find_all_files(glob):
-    """
-    Finds all files in the django finders for a given glob,
-    returns the file path, if available, and the django storage object.
-    storage objects must implement the File storage API:
-    https://docs.djangoproject.com/en/dev/ref/files/storage/
-    """
-    for finder in finders.get_finders():
-        for path, storage in finder.list([]):
-            if fnmatch.fnmatchcase(path, glob):
-                yield path, storage
+from django_pyscss.utils import find_one_file
 
 
-def find_one_file(path):
-    for file in find_all_files(path):
-        return file
+# This is where PyScss is supposed to find the image files for making sprites.
+config.STATIC_ROOT = find_one_file
+config.STATIC_URL = staticfiles_storage.url('scss/')
+
+# This is where PyScss places the sprite files.
+config.ASSETS_ROOT = os.path.join(settings.STATIC_ROOT, 'scss', 'assets')
+# PyScss expects a trailing slash.
+config.ASSETS_URL = staticfiles_storage.url('scss/assets/')
 
 
 class DjangoScss(Scss):

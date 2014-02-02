@@ -16,6 +16,9 @@ install_requires = [
     'Django>=1.3',
     'PyScss>=1.2.0',
 ]
+tests_require = [
+    'django-compressor>=1.3',
+]
 
 version = (0, 0, 1, 'final')
 
@@ -37,6 +40,7 @@ setup(
     long_description=read('README.rst'),
     packages=[package for package in find_packages() if package.startswith('django_pyscss')],
     install_requires=install_requires,
+    tests_require=tests_require,
     zip_safe=False,
     include_package_data=True,
     test_suite='testproject.runtests.runtests',

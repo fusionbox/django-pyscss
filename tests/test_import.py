@@ -6,6 +6,8 @@ from django.conf import settings
 
 from django_pyscss.scss import DjangoScss
 
+from tests.utils import clean_css
+
 
 compiler = DjangoScss(scss_opts={
     # No compress so that I can compare more easily
@@ -38,14 +40,6 @@ IMPORT_APP2 = """
 """
 
 APP2_CONTENTS = FOO_CONTENTS + APP1_CONTENTS
-
-
-def clean_css(string):
-    # The output of the compiled CSS doesn't have a newline between the ; and
-    # the } for some reason.
-    return string.strip() \
-        .replace('\n', '') \
-        .replace('; ', ';')
 
 
 class ImportTestMixin(object):

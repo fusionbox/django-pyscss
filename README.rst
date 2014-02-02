@@ -15,6 +15,19 @@ A collection of tools for making it easier to use PyScss within Django.
     and will only use staticfiles_storage to find the file.
 
 
+Using in conjunction with django-compressor.
+============================================
+
+django-pyscss comes with support for django-compressor.  All you have to do is
+add it to your ``COMPRESS_PRECOMPILERS`` setting. ::
+
+    COMPRESS_PRECOMPILERS = (
+        # ...
+        ('text/x-scss', 'django_pyscss.compressor.DjangoScssFilter'),
+        # ...
+    )
+
+
 Running the tests
 =================
 
