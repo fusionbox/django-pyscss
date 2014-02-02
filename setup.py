@@ -17,6 +17,7 @@ install_requires = [
     'PyScss>=1.2.0',
 ]
 tests_require = [
+    'Pillow',
     'django-compressor>=1.3',
 ]
 

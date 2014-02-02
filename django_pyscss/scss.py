@@ -9,11 +9,12 @@ from scss import (
     Scss, dequote, log, SourceFile, SassRule, config,
 )
 
-from django_pyscss.utils import find_one_file
+from django_pyscss.utils import find_one_file, find_all_files
 
 
+# TODO: It's really gross to modify this global settings variable.
 # This is where PyScss is supposed to find the image files for making sprites.
-config.STATIC_ROOT = find_one_file
+config.STATIC_ROOT = find_all_files
 config.STATIC_URL = staticfiles_storage.url('scss/')
 
 # This is where PyScss places the sprite files.
