@@ -9,16 +9,6 @@ from django_pyscss.scss import DjangoScss
 from tests.utils import clean_css
 
 
-compiler = DjangoScss(scss_opts={
-    # No compress so that I can compare more easily
-    'compress': 0,
-})
-
-
-def compile_string(string):
-    return compiler.compile(scss_string=string)
-
-
 IMPORT_FOO = """
 @import "css/foo.scss";
 """
@@ -42,18 +32,36 @@ IMPORT_APP2 = """
 APP2_CONTENTS = FOO_CONTENTS + APP1_CONTENTS
 
 
-class ImportTestMixin(object):
+class CompilerTestMixin(object):
+    def setUp(self):
+        self.compiler = DjangoScss(scss_opts={
+            # No compress so that I can compare more easily
+            'compress': 0,
+        })
+        super(CompilerTestMixin, self).setUp()
+
+
+class ImportTestMixin(CompilerTestMixin):
     def test_import_from_staticfiles_dirs(self):
-        actual = compile_string(IMPORT_FOO)
+        actual = self.compiler.compile(scss_string=IMPORT_FOO)
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_import_from_app(self):
-        actual = compile_string(IMPORT_APP1)
+        actual = self.compiler.compile(scss_string=IMPORT_APP1)
         self.assertEqual(clean_css(actual), clean_css(APP1_CONTENTS))
 
     def test_imports_within_file(self):
-        actual = compile_string(IMPORT_APP2)
+        actual = self.compiler.compile(scss_string=IMPORT_APP2)
         self.assertEqual(clean_css(actual), clean_css(APP2_CONTENTS))
+
+    def test_relative_import(self):
+        bar_scss = 'css/bar.scss'
+        actual = self.compiler.compile(scss_file=bar_scss)
+        self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
+
+    def test_bad_import(self):
+        actual = self.compiler.compile(scss_string='@import "this-file-does-not-and-should-never-exist.scss";')
+        self.assertEqual(clean_css(actual), '')
 
 
 @override_settings(DEBUG=True)
@@ -91,13 +99,13 @@ $widgets: sprite-map('images/icons/widget-*.png');
 """
 
 
-class AssetsTest(TestCase):
+class AssetsTest(CompilerTestMixin, TestCase):
     def test_inline_image(self):
-        actual = compile_string(INLINE_IMAGE)
+        actual = self.compiler.compile(scss_string=INLINE_IMAGE)
         self.assertEqual(clean_css(actual), clean_css(INLINED_IMAGE_EXPECTED))
 
     def test_sprite_images(self):
-        actual = compile_string(SPRITE_MAP)
+        actual = self.compiler.compile(scss_string=SPRITE_MAP)
         # pyScss puts a cachebuster query string on the end of the URLs, lets
         # just check that it made the file that we expected.
         self.assertIn('KUZdBAnPCdlG5qfocw9GYw.png', actual)

@@ -33,6 +33,18 @@ You can render SCSS manually from a string like this::
     compiler = DjangoScss()
     compiler.compile(scss_string=".foo { color: green; }")
 
+You can render SCSS from a file like this::
+
+    from django_pyscss.scss import DjangoScss
+
+    compiler = DjangoScss()
+    compiler.compile(scss_file='css/styles.scss')
+
+The file needs to be able to be located by staticfiles finders in order to be
+used.  All imports are relative to the ``STATIC_ROOT``, but you can also have
+relative imports from a file.  If you prefix an import with ``./``, you can
+import a sibling file without having to write out the whole import path.
+
 
 .. class:: django_pyscss.scss.DjangoScss
 
