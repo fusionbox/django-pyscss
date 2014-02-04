@@ -9,7 +9,7 @@ from scss import (
     Scss, dequote, log, SourceFile, SassRule, config,
 )
 
-from django_pyscss.utils import find_one_file, find_all_files
+from django_pyscss.utils import find_all_files
 
 
 # TODO: It's really gross to modify this global settings variable.
@@ -38,9 +38,13 @@ class DjangoScss(Scss):
             pass
         if staticfiles_storage.exists(filename):
             return filename, staticfiles_storage
+        else:
+            return None, None
 
     def get_file_from_finders(self, filename):
-        return find_one_file(filename)
+        for file_and_storage in find_all_files(filename):
+            return file_and_storage
+        return None, None
 
     def get_file_and_storage(self, filename):
         # TODO: the switch probably shouldn't be on DEBUG
@@ -73,9 +77,8 @@ class DjangoScss(Scss):
 
     def _find_source_file(self, filename, relative_to=None):
         for name in self.get_possible_import_paths(filename, relative_to):
-            file_and_storage = self.get_file_and_storage(name)
-            if file_and_storage:
-                full_filename, storage = file_and_storage
+            full_filename, storage = self.get_file_and_storage(name)
+            if full_filename:
                 if name not in self.source_files:
                     with storage.open(full_filename) as f:
                         source = f.read()

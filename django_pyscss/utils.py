@@ -14,8 +14,3 @@ def find_all_files(glob):
         for path, storage in finder.list([]):
             if fnmatch.fnmatchcase(path, glob):
                 yield path, storage
-
-
-def find_one_file(path):
-    for file in find_all_files(path):
-        return file
