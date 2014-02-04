@@ -3,9 +3,7 @@ from setuptools import setup, find_packages
 import subprocess
 import os
 
-__doc__ = """
-Makes it easier to use PySCSS in Django.
-"""
+__doc__ = "Makes it easier to use PySCSS in Django."
 
 
 def read(fname):
@@ -39,6 +37,10 @@ def get_version():
 setup(
     name='django-pyscss',
     version=get_version(),
+    author="Fusionbox, Inc.",
+    author_email="programmers@fusionbox.com",
+    url="https://github.com/fusionbox/django-pyscss",
+    keywords="django css scss sass pyscss compressor",
     description=__doc__,
     long_description=read('README.rst'),
     packages=[package for package in find_packages() if package.startswith('django_pyscss')],
@@ -47,4 +49,15 @@ setup(
     zip_safe=False,
     include_package_data=True,
     test_suite='testproject.runtests.runtests',
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Topic :: Internet :: WWW/HTTP',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+    ],
 )
