@@ -3,6 +3,10 @@ django-pyscss
 
 A collection of tools for making it easier to use pyScss within Django.
 
+.. image:: https://travis-ci.org/fusionbox/django-pyscss.png
+   :target: http://travis-ci.org/fusionbox/django-pyscss
+   :alt: Build Status
+
 Why do we need this?
 ====================
 
