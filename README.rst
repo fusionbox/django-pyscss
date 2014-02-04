@@ -68,6 +68,12 @@ add it to your ``COMPRESS_PRECOMPILERS`` setting. ::
         # ...
     )
 
+Then you can just use SCSS like you would use CSS normally. ::
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.css' %}">
+    {% endcompress %}
+
 
 Running the tests
 =================
