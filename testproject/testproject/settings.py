@@ -13,6 +13,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
+from django import VERSION as DJANGO_VERSION
+if DJANGO_VERSION[:2] < (1, 6):
+    TEST_RUNNER = 'discover_runner.DiscoverRunner'
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -42,6 +47,9 @@ INSTALLED_APPS = (
     'testproject.testapp1',
     'testproject.testapp2',
 )
+
+if DJANGO_VERSION[:2] < (1, 6):
+    INSTALLED_APPS += ('discover_runner', )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -108,7 +116,7 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'handlers': {
-        'console':{
+        'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },

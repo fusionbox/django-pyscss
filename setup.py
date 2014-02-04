@@ -19,7 +19,9 @@ install_requires = [
 tests_require = [
     'Pillow',
     'django-compressor>=1.3',
+    'django-discover-runner',
 ]
+
 
 version = (0, 0, 1, 'final')
 
