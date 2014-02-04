@@ -28,6 +28,8 @@ class DjangoScss(Scss):
     A subclass of the Scss compiler that uses the storages API for accessing
     files.
     """
+    supported_extensions = ['.scss', '.sass', '.css']
+
     def get_file_from_storage(self, filename):
         try:
             filename = staticfiles_storage.path(filename)
@@ -47,19 +49,27 @@ class DjangoScss(Scss):
         else:
             return self.get_file_from_storage(filename)
 
-    def get_possible_import_paths(self, filename, relative_to=None):
+    def get_possible_import_paths(self, path, relative_to=None):
         """
-        Returns an iterable of possible filenames for an import.
+        Returns an iterable of possible paths for an import.
 
         relative_to is None in the case that the SCSS is being rendered from a
         string or if it is the first file.
         """
-        if filename.startswith('/'):  # absolute import
-            filename = filename[1:]
-        elif relative_to:  # relative import
-            filename = os.path.join(relative_to, filename)
+        paths = []
 
-        return [filename]
+        if path.startswith('/'):  # absolute import
+            path = path[1:]
+        elif relative_to:  # relative import
+            path = os.path.join(relative_to, path)
+        paths.append(path)
+
+        dirname, filename = os.path.split(path)
+        name, ext = os.path.splitext(filename)
+        if not ext:
+            for extension in self.supported_extensions:
+                paths.append(os.path.join(dirname, name + extension))
+        return paths
 
     def _find_source_file(self, filename, relative_to=None):
         for name in self.get_possible_import_paths(filename, relative_to):

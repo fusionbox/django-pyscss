@@ -17,6 +17,15 @@ with open(os.path.join(settings.BASE_DIR, 'testapp1', 'static', 'css', 'app1.scs
 
 APP2_CONTENTS = FOO_CONTENTS + APP1_CONTENTS
 
+SASS_CONTENTS = """
+.sass {
+  color: #009900;
+}
+"""
+
+with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'css_file.css')) as f:
+    CSS_CONTENTS = f.read()
+
 
 class CompilerTestMixin(object):
     def setUp(self):
@@ -55,6 +64,18 @@ class ImportTestMixin(CompilerTestMixin):
     def test_bad_import(self):
         actual = self.compiler.compile(scss_string='@import "this-file-does-not-and-should-never-exist.scss";')
         self.assertEqual(clean_css(actual), '')
+
+    def test_no_extension_import(self):
+        actual = self.compiler.compile(scss_string='@import "/css/foo";')
+        self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
+
+    def test_no_extension_import_sass(self):
+        actual = self.compiler.compile(scss_string='@import "/css/sass_file";')
+        self.assertEqual(clean_css(actual), clean_css(SASS_CONTENTS))
+
+    def test_no_extension_import_css(self):
+        actual = self.compiler.compile(scss_string='@import "/css/css_file";')
+        self.assertEqual(clean_css(actual), clean_css(CSS_CONTENTS))
 
 
 @override_settings(DEBUG=True)
