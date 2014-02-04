@@ -1,5 +1,6 @@
-from django.test import TestCase
 from django.template.loader import Template, Context
+
+from tests.utils import CollectStaticTestCase
 
 
 APP2_LINK_TAG = """
@@ -19,7 +20,7 @@ IMPORT_APP2_STYLE_TAG = """
 """
 
 
-class CompressorTest(TestCase):
+class CompressorTest(CollectStaticTestCase):
     def test_compressor_can_compile_scss(self):
         actual = Template(APP2_LINK_TAG).render(Context())
         # 4b368862ec8c is the cache key that compressor gives to the compiled
