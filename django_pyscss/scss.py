@@ -151,6 +151,8 @@ class DjangoScss(Scss):
         Overwritten to call _find_source_file instead of
         SourceFile.from_filename.  Also added the relative_to option.
         """
+        if not os.path.exists(config.ASSETS_ROOT):
+            os.makedirs(config.ASSETS_ROOT)
         if super_selector:
             self.super_selector = super_selector + ' '
         self.reset()

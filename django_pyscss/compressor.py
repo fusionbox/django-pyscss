@@ -5,7 +5,7 @@ import os
 from compressor.filters import FilterBase
 from compressor.conf import settings
 
-from django_pyscss.scss import DjangoScss, config
+from django_pyscss.scss import DjangoScss
 
 
 class DjangoScssFilter(FilterBase):
@@ -26,7 +26,5 @@ class DjangoScssFilter(FilterBase):
             self.relative_to = os.path.dirname(href.replace(settings.STATIC_URL, ''))
 
     def input(self, **kwargs):
-        if not os.path.exists(config.ASSETS_ROOT):
-            os.makedirs(config.ASSETS_ROOT)
         return self.compiler.compile(scss_string=self.content,
                                      relative_to=self.relative_to)
