@@ -79,7 +79,7 @@ class DjangoScss(Scss):
         for name in self.get_possible_import_paths(filename, relative_to):
             full_filename, storage = self.get_file_and_storage(name)
             if full_filename:
-                if name not in self.source_files:
+                if full_filename not in self.source_file_index:
                     with storage.open(full_filename) as f:
                         source = f.read()
 
