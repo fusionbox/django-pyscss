@@ -1,3 +1,11 @@
+from django.test import TestCase
+from django.core.management import call_command
+
+
+class CollectStaticTestCase(TestCase):
+    def setUp(self):
+        call_command('collectstatic', interactive=False)
+        super(CollectStaticTestCase, self).setUp()
 
 
 def clean_css(string):

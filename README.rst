@@ -74,7 +74,9 @@ add it to your ``COMPRESS_PRECOMPILERS`` setting. ::
 Running the tests
 =================
 
-You first have to run `./manage.py collectstatic` before you can run the tests
-for the first time.  After that, you can just run::
+You can run the tests by running.
 
     $ python setup.py test
+
+Please note that this will collecstatic into ``tmp/static/`` automatically as
+some of the tests require the staticfiles to have been collected.

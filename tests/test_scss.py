@@ -6,7 +6,7 @@ from django.conf import settings
 
 from django_pyscss.scss import DjangoScss
 
-from tests.utils import clean_css
+from tests.utils import clean_css, CollectStaticTestCase
 
 
 IMPORT_FOO = """
@@ -70,7 +70,7 @@ class FindersImportTest(ImportTestMixin, TestCase):
 
 
 @override_settings(DEBUG=False)
-class StorageImportTest(ImportTestMixin, TestCase):
+class StorageImportTest(ImportTestMixin, CollectStaticTestCase):
     pass
 
 
