@@ -41,9 +41,7 @@ You can render SCSS from a file like this::
     compiler.compile(scss_file='css/styles.scss')
 
 The file needs to be able to be located by staticfiles finders in order to be
-used.  All imports are relative to the ``STATIC_ROOT``, but you can also have
-relative imports from a file.  If you prefix an import with ``./``, you can
-import a sibling file without having to write out the whole import path.
+used.
 
 
 .. class:: django_pyscss.scss.DjangoScss

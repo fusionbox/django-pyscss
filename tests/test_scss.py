@@ -9,25 +9,11 @@ from django_pyscss.scss import DjangoScss
 from tests.utils import clean_css, CollectStaticTestCase
 
 
-IMPORT_FOO = """
-@import "css/foo.scss";
-"""
-
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'foo.scss')) as f:
     FOO_CONTENTS = f.read()
 
-
-IMPORT_APP1 = """
-@import "css/app1.scss";
-"""
-
 with open(os.path.join(settings.BASE_DIR, 'testapp1', 'static', 'css', 'app1.scss')) as f:
     APP1_CONTENTS = f.read()
-
-
-IMPORT_APP2 = """
-@import "css/app2.scss";
-"""
 
 APP2_CONTENTS = FOO_CONTENTS + APP1_CONTENTS
 
@@ -43,20 +29,27 @@ class CompilerTestMixin(object):
 
 class ImportTestMixin(CompilerTestMixin):
     def test_import_from_staticfiles_dirs(self):
-        actual = self.compiler.compile(scss_string=IMPORT_FOO)
+        actual = self.compiler.compile(scss_string='@import "/css/foo.scss";')
+        self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
+
+    def test_import_from_staticfiles_dirs_relative(self):
+        actual = self.compiler.compile(scss_string='@import "css/foo.scss";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_import_from_app(self):
-        actual = self.compiler.compile(scss_string=IMPORT_APP1)
+        actual = self.compiler.compile(scss_string='@import "/css/app1.scss";')
+        self.assertEqual(clean_css(actual), clean_css(APP1_CONTENTS))
+
+    def test_import_from_app_relative(self):
+        actual = self.compiler.compile(scss_string='@import "css/app1.scss";')
         self.assertEqual(clean_css(actual), clean_css(APP1_CONTENTS))
 
     def test_imports_within_file(self):
-        actual = self.compiler.compile(scss_string=IMPORT_APP2)
+        actual = self.compiler.compile(scss_string='@import "/css/app2.scss";')
         self.assertEqual(clean_css(actual), clean_css(APP2_CONTENTS))
 
     def test_relative_import(self):
-        bar_scss = 'css/bar.scss'
-        actual = self.compiler.compile(scss_file=bar_scss)
+        actual = self.compiler.compile(scss_file='/css/bar.scss')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_bad_import(self):

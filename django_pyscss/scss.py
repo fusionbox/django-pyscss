@@ -4,7 +4,6 @@ import os
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
-from django.core.exceptions import SuspiciousFileOperation
 
 from scss import (
     Scss, dequote, log, SourceFile, SassRule, config,
@@ -48,26 +47,39 @@ class DjangoScss(Scss):
         else:
             return self.get_file_from_storage(filename)
 
-    def _find_source_file(self, name):
-        file_and_storage = self.get_file_and_storage(name)
-        if file_and_storage is None:
-            return None
-        else:
-            full_filename, storage = file_and_storage
-        if name not in self.source_files:
-            with storage.open(full_filename) as f:
-                source = f.read()
+    def get_possible_import_paths(self, filename, relative_to=None):
+        """
+        Returns an iterable of possible filenames for an import.
 
-            source_file = SourceFile(
-                full_filename,
-                source,
-            )
-            # SourceFile.__init__ calls os.path.realpath on this, we don't want
-            # that.
-            source_file.parent_dir = os.path.dirname(name)
-            self.source_files.append(source_file)
-            self.source_file_index[full_filename] = source_file
-        return self.source_file_index[full_filename]
+        relative_to is None in the case that the SCSS is being rendered from a
+        string or if it is the first file.
+        """
+        if filename.startswith('/'):  # absolute import
+            filename = filename[1:]
+        elif relative_to:  # relative import
+            filename = os.path.join(relative_to, filename)
+
+        return [filename]
+
+    def _find_source_file(self, filename, relative_to=None):
+        for name in self.get_possible_import_paths(filename, relative_to):
+            file_and_storage = self.get_file_and_storage(name)
+            if file_and_storage:
+                full_filename, storage = file_and_storage
+                if name not in self.source_files:
+                    with storage.open(full_filename) as f:
+                        source = f.read()
+
+                    source_file = SourceFile(
+                        full_filename,
+                        source,
+                    )
+                    # SourceFile.__init__ calls os.path.realpath on this, we don't want
+                    # that, we want them to remain relative.
+                    source_file.parent_dir = os.path.dirname(name)
+                    self.source_files.append(source_file)
+                    self.source_file_index[full_filename] = source_file
+                return self.source_file_index[full_filename]
 
     def _do_import(self, rule, scope, block):
         """
@@ -83,10 +95,8 @@ class DjangoScss(Scss):
         for name in names:
             name = dequote(name.strip())
 
-            if name.startswith('./'):
-                name = rule.source_file.parent_dir + name[1:]
-
-            source_file = self._find_source_file(name)
+            relative_to = rule.source_file.parent_dir
+            source_file = self._find_source_file(name, relative_to)
 
             if source_file is None:
                 i_codestr = self._do_magic_import(rule, scope, block)
@@ -121,10 +131,12 @@ class DjangoScss(Scss):
             rule.namespace.add_import(import_key, rule.import_key, rule.file_and_line)
             self.manage_children(_rule, scope)
 
-    def Compilation(self, scss_string=None, scss_file=None, super_selector=None, filename=None, is_sass=None, line_numbers=True):
+    def Compilation(self, scss_string=None, scss_file=None, super_selector=None,
+                    filename=None, is_sass=None, line_numbers=True,
+                    relative_to=None):
         """
         Overwritten to call _find_source_file instead of
-        SourceFile.from_filename.
+        SourceFile.from_filename.  Also added the relative_to option.
         """
         if super_selector:
             self.super_selector = super_selector + ' '
@@ -133,6 +145,9 @@ class DjangoScss(Scss):
         source_file = None
         if scss_string is not None:
             source_file = SourceFile.from_string(scss_string, filename, is_sass, line_numbers)
+            # Set the parent_dir to be something meaningful instead of the
+            # current working directory, which is never correct for DjangoScss.
+            source_file.parent_dir = relative_to
         elif scss_file is not None:
             # Call _find_source_file instead of SourceFile.from_filename
             source_file = self._find_source_file(scss_file)
