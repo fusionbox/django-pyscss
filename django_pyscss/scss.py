@@ -76,7 +76,9 @@ class DjangoScss(Scss):
         return paths
 
     def _find_source_file(self, filename, relative_to=None):
-        for name in self.get_possible_import_paths(filename, relative_to):
+        paths = self.get_possible_import_paths(filename, relative_to)
+        log.debug('Searching for %s in %s', filename, paths)
+        for name in paths:
             full_filename, storage = self.get_file_and_storage(name)
             if full_filename:
                 if full_filename not in self.source_file_index:
