@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
+from itertools import product
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
@@ -70,9 +71,12 @@ class DjangoScss(Scss):
 
         dirname, filename = os.path.split(path)
         name, ext = os.path.splitext(filename)
-        if not ext:
-            for extension in self.supported_extensions:
-                paths.append(os.path.join(dirname, name + extension))
+        if ext:
+            search_exts = [ext]
+        else:
+            search_exts = self.supported_extensions
+        for prefix, suffix in product(('_', ''), search_exts):
+            paths.append(os.path.join(dirname, prefix + name + suffix))
         return paths
 
     def _find_source_file(self, filename, relative_to=None):

@@ -26,6 +26,9 @@ SASS_CONTENTS = """
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'css_file.css')) as f:
     CSS_CONTENTS = f.read()
 
+with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', '_baz.scss')) as f:
+    BAZ_CONTENTS = f.read()
+
 
 class CompilerTestMixin(object):
     def setUp(self):
@@ -76,6 +79,10 @@ class ImportTestMixin(CompilerTestMixin):
     def test_no_extension_import_css(self):
         actual = self.compiler.compile(scss_string='@import "/css/css_file";')
         self.assertEqual(clean_css(actual), clean_css(CSS_CONTENTS))
+
+    def test_import_underscore_file(self):
+        actual = self.compiler.compile(scss_string='@import "/css/baz";')
+        self.assertEqual(clean_css(actual), clean_css(BAZ_CONTENTS))
 
 
 @override_settings(DEBUG=True)
