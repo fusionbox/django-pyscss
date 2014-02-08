@@ -15,5 +15,8 @@ matrix:
 install:
   - pip install -q $DJANGO_PACKAGE --use-mirrors
   - pip install --use-mirrors .
+  - pip install coveralls
 script:
-  - python setup.py test
+  - coverage run --source=django_pyscss setup.py test
+after_success:
+  coveralls

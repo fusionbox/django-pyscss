@@ -7,6 +7,10 @@ A collection of tools for making it easier to use pyScss within Django.
    :target: http://travis-ci.org/fusionbox/django-pyscss
    :alt: Build Status
 
+.. image:: https://coveralls.io/repos/fusionbox/django-pyscss/badge.png?branch=master
+   :target: https://coveralls.io/r/fusionbox/django-pyscss
+   :alt: Coverage Status
+
 Why do we need this?
 ====================
 
