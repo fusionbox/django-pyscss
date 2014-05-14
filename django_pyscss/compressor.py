@@ -9,9 +9,11 @@ from django_pyscss.scss import DjangoScss
 
 
 class DjangoScssFilter(FilterBase):
-    compiler = DjangoScss()
+    compiler = None
 
-    def __init__(self, content, attrs=None, filter_type=None, filename=None):
+    def __init__(self, content, attrs=None, filter_type=None, filename=None, charset='utf-8'):
+        self.compiler = DjangoScss(charset=charset)
+
         # It looks like there is a bug in django-compressor because it expects
         # us to accept attrs.
         super(DjangoScssFilter, self).__init__(content, filter_type, filename)

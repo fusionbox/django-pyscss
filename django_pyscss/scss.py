@@ -30,6 +30,12 @@ class DjangoScss(Scss):
     files.
     """
     supported_extensions = ['.scss', '.sass', '.css']
+    charset = 'utf-8'
+
+    def __init__(self, **kwargs):
+        if 'charset' in kwargs:
+            self.charset = kwargs.pop('charset')
+        super(DjangoScss, self).__init__(**kwargs)
 
     def get_file_from_storage(self, filename):
         try:
@@ -87,7 +93,7 @@ class DjangoScss(Scss):
             if full_filename:
                 if full_filename not in self.source_file_index:
                     with storage.open(full_filename) as f:
-                        source = f.read()
+                        source = f.read().decode(self.charset)
 
                     source_file = SourceFile(
                         full_filename,
