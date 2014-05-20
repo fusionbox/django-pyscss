@@ -11,10 +11,12 @@ from django_pyscss.scss import DjangoScss
 class DjangoScssFilter(FilterBase):
     compiler = DjangoScss()
 
-    def __init__(self, content, attrs=None, filter_type=None, filename=None, **kwargs):
+    def __init__(self, content, attrs=None, filter_type=None, filename=None,
+                 charset=None, **kwargs):
         # It looks like there is a bug in django-compressor because it expects
         # us to accept attrs.
-        super(DjangoScssFilter, self).__init__(content, filter_type, filename, **kwargs)
+        super(DjangoScssFilter, self).__init__(content, filter_type, filename,
+                                               charset, **kwargs)
         try:
             # this is a link tag which means there is an SCSS file being
             # referenced.
