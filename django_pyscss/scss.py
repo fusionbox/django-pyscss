@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+import errno
 import os
 from itertools import product
 
@@ -86,8 +87,13 @@ class DjangoScss(Scss):
             full_filename, storage = self.get_file_and_storage(name)
             if full_filename:
                 if full_filename not in self.source_file_index:
-                    with storage.open(full_filename) as f:
-                        source = f.read()
+                    try:
+                        with storage.open(full_filename) as f:
+                            source = f.read()
+                    except IOError as e:
+                        if e.errno == errno.EISDIR:
+                            continue
+                        raise
 
                     source_file = SourceFile(
                         full_filename,
