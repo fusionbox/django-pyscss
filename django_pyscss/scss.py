@@ -67,7 +67,6 @@ class DjangoScss(Scss):
             path = path[1:]
         elif relative_to:  # relative import
             path = os.path.join(relative_to, path)
-        paths.append(path)
 
         dirname, filename = os.path.split(path)
         name, ext = os.path.splitext(filename)
@@ -77,6 +76,7 @@ class DjangoScss(Scss):
             search_exts = self.supported_extensions
         for prefix, suffix in product(('_', ''), search_exts):
             paths.append(os.path.join(dirname, prefix + name + suffix))
+        paths.append(path)
         return paths
 
     def _find_source_file(self, filename, relative_to=None):
