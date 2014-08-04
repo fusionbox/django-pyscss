@@ -21,7 +21,7 @@ tests_require = [
 ]
 
 
-version = (1, 0, 1, 'final')
+version = (1, 0, 2, 'final')
 
 
 def get_version():
