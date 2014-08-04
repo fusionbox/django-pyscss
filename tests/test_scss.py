@@ -29,6 +29,9 @@ with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'css_f
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', '_baz.scss')) as f:
     BAZ_CONTENTS = f.read()
 
+with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'path_conflict.scss')) as f:
+    PATH_CONFLICT_CONTENTS = f.read()
+
 
 class CompilerTestMixin(object):
     def setUp(self):
@@ -83,6 +86,10 @@ class ImportTestMixin(CompilerTestMixin):
     def test_import_underscore_file(self):
         actual = self.compiler.compile(scss_string='@import "/css/baz";')
         self.assertEqual(clean_css(actual), clean_css(BAZ_CONTENTS))
+
+    def test_import_conflict(self):
+        actual = self.compiler.compile(scss_string='@import "/css/path_conflict";')
+        self.assertEqual(clean_css(actual), clean_css(PATH_CONFLICT_CONTENTS))
 
 
 @override_settings(DEBUG=True)
