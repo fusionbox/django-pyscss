@@ -47,6 +47,10 @@ class ImportTestMixin(CompilerTestMixin):
         actual = self.compiler.compile(scss_string='@import "/css/foo.scss";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
+    def test_import_from_staticfiles_dirs_prefixed(self):
+        actual = self.compiler.compile(scss_string='@import "/css_prefix/baz.scss";')
+        self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
+
     def test_import_from_staticfiles_dirs_relative(self):
         actual = self.compiler.compile(scss_string='@import "css/foo.scss";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))

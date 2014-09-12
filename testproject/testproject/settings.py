@@ -97,6 +97,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, '..', 'tmp', 'static')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'testproject', 'static'),
+    ('css_prefix',
+     os.path.join(BASE_DIR, 'testproject', 'static', 'css', 'prefixed')),
 )
 
 # It doesn't seem like django-compressor respects override_settings
