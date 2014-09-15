@@ -1,6 +1,11 @@
 CHANGELOG
 ---------
 
+1.0.3 - 2014-09-15
+==================
+
+  * Respect storage.prefix [Radomir Dopieralski]
+
 1.0.2 - 2014-08-04
 ==================
 
