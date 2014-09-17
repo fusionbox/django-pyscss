@@ -6,9 +6,10 @@ from itertools import product
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 
-from scss import (
-    Scss, dequote, log, SourceFile, SassRule, config,
-)
+from scss import Scss, log, config
+from scss.util import dequote
+from scss.source import SourceFile
+from scss.rule import SassRule
 
 from django_pyscss.utils import find_all_files
 
