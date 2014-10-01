@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 from itertools import product
+import errno
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
@@ -22,6 +23,18 @@ config.STATIC_URL = staticfiles_storage.url('scss/')
 config.ASSETS_ROOT = os.path.join(settings.STATIC_ROOT, 'scss', 'assets')
 # PyScss expects a trailing slash.
 config.ASSETS_URL = staticfiles_storage.url('scss/assets/')
+
+
+def idempotent_makedirs(path, *args, **kwargs):
+    """
+    os.makedirs throws an error if the directory already existed. This function
+    does not. See https://github.com/fusionbox/django-pyscss/issues/23
+    """
+    try:
+        os.makedirs(path, *args, **kwargs)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
 
 class DjangoScss(Scss):
@@ -157,8 +170,7 @@ class DjangoScss(Scss):
         Overwritten to call _find_source_file instead of
         SourceFile.from_filename.  Also added the relative_to option.
         """
-        if not os.path.exists(config.ASSETS_ROOT):
-            os.makedirs(config.ASSETS_ROOT)
+        idempotent_makedirs(config.ASSETS_ROOT)
         if super_selector:
             self.super_selector = super_selector + ' '
         self.reset()

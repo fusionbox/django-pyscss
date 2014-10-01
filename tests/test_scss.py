@@ -1,9 +1,12 @@
 import os
+import mock
+import tempfile
 
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.conf import settings
 
+from scss import config
 from django_pyscss.scss import DjangoScss
 
 from tests.utils import clean_css, CollectStaticTestCase
@@ -141,3 +144,28 @@ class AssetsTest(CompilerTestMixin, TestCase):
         # pyScss puts a cachebuster query string on the end of the URLs, lets
         # just check that it made the file that we expected.
         self.assertIn('KUZdBAnPCdlG5qfocw9GYw.png', actual)
+
+    def test_mkdir_race_condition(self):
+        """
+        There is a race condition when different instances of DjangoScss are
+        instantiated in different threads.
+
+        See https://github.com/fusionbox/django-pyscss/issues/23
+
+        We simulate the race condition by mocking the return of os.path.exists.
+        """
+        old_assets_root = config.ASSETS_ROOT
+        try:
+            new_assets_root = tempfile.mkdtemp()
+            config.ASSETS_ROOT = new_assets_root
+
+            def return_false_once(*args, **kwargs):
+                patch.stop()
+                return False
+
+            patch = mock.patch('os.path.exists', new=return_false_once)
+            patch.start()
+            self.compiler.compile(scss_string=".test { color: red; }")
+        finally:
+            config.ASSETS_ROOT = old_assets_root
+            os.rmdir(new_assets_root)

@@ -2,6 +2,7 @@
 from setuptools import setup, find_packages
 import subprocess
 import os
+import sys
 
 __doc__ = "Makes it easier to use PySCSS in Django."
 
@@ -20,6 +21,8 @@ tests_require = [
     'django-discover-runner',
 ]
 
+if sys.version_info < (3, 3):
+    tests_require.append('mock')
 
 version = (1, 0, 0, 'alpha')
 
