@@ -1,6 +1,11 @@
 CHANGELOG
 ---------
 
+1.0.5 - 2014-10-16
+==================
+
+  * Fix bad pinning of PyScss [Antoine Catton]
+
 1.0.4 - 2014-10-16
 ==================
 
