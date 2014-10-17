@@ -13,6 +13,9 @@ matrix:
       env: DJANGO_PACKAGE='Django>=1.4,<1.5'
     - python: "2.7"
       env: DJANGO_PACKAGE='Django>=1.4,<1.5'
+  exclude:
+    - python: "2.6"
+      env: DJANGO_PACKAGE='Django>=1.7,<1.8'
 install:
   - pip install -q $DJANGO_PACKAGE --use-mirrors
   - pip install --use-mirrors .
