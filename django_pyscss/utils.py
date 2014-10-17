@@ -13,6 +13,7 @@ def find_all_files(glob):
     """
     for finder in finders.get_finders():
         for path, storage in finder.list([]):
-            if fnmatch.fnmatchcase(os.path.join(storage.prefix or '', path),
+            if fnmatch.fnmatchcase(os.path.join(getattr(storage, 'prefix', '')
+                                                or '', path),
                                    glob):
                 yield path, storage
