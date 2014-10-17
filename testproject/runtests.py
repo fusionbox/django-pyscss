@@ -3,6 +3,10 @@ import os
 import sys
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testproject.testproject.settings")
 
+import django
+if hasattr(django, 'setup'):
+    django.setup()
+
 from django.test.utils import get_runner
 from django.conf import settings
 
