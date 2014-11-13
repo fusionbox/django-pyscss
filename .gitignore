@@ -4,3 +4,7 @@ tmp/
 .coverage
 htmlcov/
 /dist/
+/*.egg
+*.pyc
+.*.sw*
+.sw*
