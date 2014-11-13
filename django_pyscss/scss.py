@@ -7,6 +7,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.conf import settings
 
 from scss import Scss
+from scss.compiler import Compiler
 import scss.config as config
 
 from django_pyscss.utils import find_all_files
@@ -66,10 +67,25 @@ class DjangoOrigin(object):
             raise IOError
 
 
+def make_django_scss_compiler(**kwargs):
+    """Create a :class:`scss.Compiler` that uses the storage API for finding
+    files.
+    """
+    # Add the Django loader to the search path
+    kwargs.setdefault('search_path', []).append(DjangoOrigin())
+
+    # Make @import work on .css files, rather than leaving them be
+    kwargs.setdefault('import_static_css', True)
+
+    return Compiler(**kwargs)
+
+
 class DjangoScss(Scss):
     """
     A subclass of the Scss compiler that uses the storages API for accessing
     files.
+
+    DEPRECATED; use :func:`make_django_scss_compiler` instead.
     """
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('search_paths', []).append(DjangoOrigin())
