@@ -36,30 +36,28 @@ Rendering SCSS manually
 
 You can render SCSS manually from a string like this::
 
-    from django_pyscss.scss import DjangoScss
+    from django_pyscss.scss import make_django_scss_compiler
 
-    compiler = DjangoScss()
-    compiler.compile(scss_string=".foo { color: green; }")
+    compiler = make_django_scss_compiler()
+    compiler.compile_string(".foo { color: green; }")
 
 You can render SCSS from a file like this::
 
-    from django_pyscss.scss import DjangoScss
+    from django_pyscss.scss import make_django_scss_compiler
 
-    compiler = DjangoScss()
-    compiler.compile(scss_file='css/styles.scss')
+    compiler = make_django_scss_compiler()
+    compiler.compile(css/styles.scss')
 
 The file needs to be able to be located by staticfiles finders in order to be
 used.
 
 
-.. class:: django_pyscss.scss.DjangoScss
+.. function:: django_pyscss.scss.make_django_scss_compiler
 
-    A subclass of :class:`scss.Scss` that uses the Django staticfiles storage
-    and finders instead of the filesystem.  This obsoletes the load_paths
-    option that was present previously by searching instead in your staticfiles
-    directories.
+    Creates a :class:`scss.compiler.Compiler` configured to use Django
+    staticfiles storage and finders instead of the filesystem.
 
-    In DEBUG mode, DjangoScss will search using all of the finders to find the
+    In DEBUG mode, the compiler will search using all of the finders to find the
     file.  If you are not in DEBUG mode, it assumes you have run collectstatic
     and will only use staticfiles_storage to find the file.
 
