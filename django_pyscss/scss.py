@@ -9,6 +9,11 @@ from django.conf import settings
 from scss import Scss
 from scss.compiler import Compiler
 import scss.config as config
+from scss.extension.bootstrap import BootstrapExtension
+from scss.extension.core import CoreExtension
+from scss.extension.compass import CompassExtension
+from scss.extension.extra import ExtraExtension
+from scss.extension.fonts import FontsExtension
 
 from django_pyscss.utils import find_all_files
 from django.contrib.staticfiles import finders
@@ -71,6 +76,15 @@ def make_django_scss_compiler(**kwargs):
     """Create a :class:`scss.Compiler` that uses the storage API for finding
     files.
     """
+    # Load all the built-in extensions by default
+    kwargs.setdefault('extensions', [
+        CoreExtension,
+        ExtraExtension,
+        FontsExtension,
+        CompassExtension,
+        BootstrapExtension,
+    ])
+
     # Add the Django loader to the search path
     kwargs.setdefault('search_path', []).append(DjangoOrigin())
 

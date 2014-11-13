@@ -6,7 +6,7 @@ from django.test.utils import override_settings
 from django.conf import settings
 from scss.errors import SassImportError
 
-from django_pyscss.scss import DjangoScss
+from django_pyscss.scss import make_django_scss_compiler
 
 from tests.utils import clean_css, CollectStaticTestCase
 
@@ -37,67 +37,64 @@ with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'path_
 
 class CompilerTestMixin(object):
     def setUp(self):
-        self.compiler = DjangoScss(scss_opts={
-            # No compress so that I can compare more easily
-            'compress': 0,
-        })
+        self.compiler = make_django_scss_compiler()
         super(CompilerTestMixin, self).setUp()
 
 
 class ImportTestMixin(CompilerTestMixin):
     def test_import_from_staticfiles_dirs(self):
-        actual = self.compiler.compile(scss_string='@import "/css/foo.scss";')
+        actual = self.compiler.compile_string('@import "/css/foo.scss";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_import_from_staticfiles_dirs_prefixed(self):
-        actual = self.compiler.compile(scss_string='@import "/css_prefix/baz.scss";')
+        actual = self.compiler.compile_string('@import "/css_prefix/baz.scss";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_import_from_staticfiles_dirs_relative(self):
-        actual = self.compiler.compile(scss_string='@import "css/foo.scss";')
+        actual = self.compiler.compile_string('@import "css/foo.scss";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_import_from_app(self):
-        actual = self.compiler.compile(scss_string='@import "/css/app1.scss";')
+        actual = self.compiler.compile_string('@import "/css/app1.scss";')
         self.assertEqual(clean_css(actual), clean_css(APP1_CONTENTS))
 
     def test_import_from_app_relative(self):
-        actual = self.compiler.compile(scss_string='@import "css/app1.scss";')
+        actual = self.compiler.compile_string('@import "css/app1.scss";')
         self.assertEqual(clean_css(actual), clean_css(APP1_CONTENTS))
 
     def test_imports_within_file(self):
-        actual = self.compiler.compile(scss_string='@import "/css/app2.scss";')
+        actual = self.compiler.compile_string('@import "/css/app2.scss";')
         self.assertEqual(clean_css(actual), clean_css(APP2_CONTENTS))
 
     def test_relative_import(self):
-        actual = self.compiler.compile(scss_file='/css/bar.scss')
+        actual = self.compiler.compile('/css/bar.scss')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_bad_import(self):
         self.assertRaises(
             SassImportError,
-            self.compiler.compile,
-            scss_string='@import "this-file-does-not-and-should-never-exist.scss";',
+            self.compiler.compile_string,
+            '@import "this-file-does-not-and-should-never-exist.scss";',
         )
 
     def test_no_extension_import(self):
-        actual = self.compiler.compile(scss_string='@import "/css/foo";')
+        actual = self.compiler.compile_string('@import "/css/foo";')
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_no_extension_import_sass(self):
-        actual = self.compiler.compile(scss_string='@import "/css/sass_file";')
+        actual = self.compiler.compile_string('@import "/css/sass_file";')
         self.assertEqual(clean_css(actual), clean_css(SASS_CONTENTS))
 
     def test_no_extension_import_css(self):
-        actual = self.compiler.compile(scss_string='@import "/css/css_file";')
+        actual = self.compiler.compile_string('@import "/css/css_file";')
         self.assertEqual(clean_css(actual), clean_css(CSS_CONTENTS))
 
     def test_import_underscore_file(self):
-        actual = self.compiler.compile(scss_string='@import "/css/baz";')
+        actual = self.compiler.compile_string('@import "/css/baz";')
         self.assertEqual(clean_css(actual), clean_css(BAZ_CONTENTS))
 
     def test_import_conflict(self):
-        actual = self.compiler.compile(scss_string='@import "/css/path_conflict";')
+        actual = self.compiler.compile_string('@import "/css/path_conflict";')
         self.assertEqual(clean_css(actual), clean_css(PATH_CONFLICT_CONTENTS))
 
 
@@ -138,11 +135,11 @@ $widgets: sprite-map('images/icons/widget-*.png');
 
 class AssetsTest(CompilerTestMixin, TestCase):
     def test_inline_image(self):
-        actual = self.compiler.compile(scss_string=INLINE_IMAGE)
+        actual = self.compiler.compile_string(INLINE_IMAGE)
         self.assertEqual(clean_css(actual), clean_css(INLINED_IMAGE_EXPECTED))
 
     def test_sprite_images(self):
-        actual = self.compiler.compile(scss_string=SPRITE_MAP)
+        actual = self.compiler.compile_string(SPRITE_MAP)
         # pyScss puts a cachebuster query string on the end of the URLs, lets
         # just check that it made the file that we expected.
         self.assert_(re.search(
