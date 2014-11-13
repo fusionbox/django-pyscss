@@ -1,8 +1,10 @@
 import os
+import re
 
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.conf import settings
+from scss.errors import SassImportError
 
 from django_pyscss.scss import DjangoScss
 
@@ -72,8 +74,11 @@ class ImportTestMixin(CompilerTestMixin):
         self.assertEqual(clean_css(actual), clean_css(FOO_CONTENTS))
 
     def test_bad_import(self):
-        actual = self.compiler.compile(scss_string='@import "this-file-does-not-and-should-never-exist.scss";')
-        self.assertEqual(clean_css(actual), '')
+        self.assertRaises(
+            SassImportError,
+            self.compiler.compile,
+            scss_string='@import "this-file-does-not-and-should-never-exist.scss";',
+        )
 
     def test_no_extension_import(self):
         actual = self.compiler.compile(scss_string='@import "/css/foo";')
@@ -140,4 +145,5 @@ class AssetsTest(CompilerTestMixin, TestCase):
         actual = self.compiler.compile(scss_string=SPRITE_MAP)
         # pyScss puts a cachebuster query string on the end of the URLs, lets
         # just check that it made the file that we expected.
-        self.assertIn('KUZdBAnPCdlG5qfocw9GYw.png', actual)
+        self.assert_(re.search(
+            'url[(]/static/scss/assets/images_icons-.+[.]png[?]_=\d+', actual))
