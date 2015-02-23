@@ -1,15 +1,18 @@
 from __future__ import absolute_import
 
-import os
+from pathlib import Path
 
 from compressor.filters import FilterBase
 from compressor.conf import settings
+from scss.cssdefs import determine_encoding
+from scss.source import SourceFile
 
-from django_pyscss.scss import DjangoScss
+from django_pyscss.scss import DjangoOrigin
+from django_pyscss.scss import make_django_scss_compiler
 
 
 class DjangoScssFilter(FilterBase):
-    compiler = DjangoScss()
+    compiler = make_django_scss_compiler()
 
     def __init__(self, content, attrs=None, filter_type=None, filename=None, **kwargs):
         # It looks like there is a bug in django-compressor because it expects
@@ -21,10 +24,18 @@ class DjangoScssFilter(FilterBase):
             href = attrs['href']
         except KeyError:
             # this is a style tag which means this is inline SCSS.
-            self.relative_to = None
+            self.origin = None
+            self.relpath = None
         else:
-            self.relative_to = os.path.dirname(href.replace(settings.STATIC_URL, ''))
+            # All we have is a URL, which probably came from {% static %}.  So
+            # chop off the STATIC_URL prefix to get the original relative path,
+            # and use the Django loader.
+            self.origin = DjangoOrigin()
+            self.relpath = Path(href.replace(settings.STATIC_URL, ''))
 
     def input(self, **kwargs):
-        return self.compiler.compile(scss_string=self.content,
-                                     relative_to=self.relative_to)
+        source = SourceFile(
+            self.origin, self.relpath, self.content,
+            encoding=determine_encoding(self.content),
+        )
+        return self.compiler.compile_sources(source)
