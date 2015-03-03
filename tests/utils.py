@@ -1,11 +1,22 @@
+import shutil
+
 from django.test import TestCase
 from django.core.management import call_command
+from django.conf import settings
 
 
 class CollectStaticTestCase(TestCase):
-    def setUp(self):
-        call_command('collectstatic', interactive=False)
-        super(CollectStaticTestCase, self).setUp()
+    @classmethod
+    def setUpClass(cls):
+        super(CollectStaticTestCase, cls).setUpClass()
+        call_command('collectstatic', interactive=False, verbosity=0)
+
+
+class NoCollectStaticTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(NoCollectStaticTestCase, cls).setUpClass()
+        shutil.rmtree(settings.STATIC_ROOT, ignore_errors=True)
 
 
 def clean_css(string):

@@ -1,15 +1,13 @@
 from __future__ import absolute_import
 
-import os
-
 from compressor.filters import FilterBase
 from compressor.conf import settings
 
-from django_pyscss.scss import DjangoScss
+from django_pyscss import DjangoScssCompiler
 
 
 class DjangoScssFilter(FilterBase):
-    compiler = DjangoScss()
+    compiler = DjangoScssCompiler()
 
     def __init__(self, content, attrs=None, filter_type=None, filename=None, **kwargs):
         # It looks like there is a bug in django-compressor because it expects
@@ -21,10 +19,9 @@ class DjangoScssFilter(FilterBase):
             href = attrs['href']
         except KeyError:
             # this is a style tag which means this is inline SCSS.
-            self.relative_to = None
+            self.filename = None
         else:
-            self.relative_to = os.path.dirname(href.replace(settings.STATIC_URL, ''))
+            self.filename = href.replace(settings.STATIC_URL, '')
 
     def input(self, **kwargs):
-        return self.compiler.compile(scss_string=self.content,
-                                     relative_to=self.relative_to)
+        return self.compiler.compile_string(self.content, filename=self.filename)

@@ -1,4 +1,4 @@
-from django.template.loader import Template, Context
+from django.template import Template, Context
 
 from tests.utils import CollectStaticTestCase
 

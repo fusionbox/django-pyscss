@@ -15,5 +15,6 @@ def runtests():
     # Stolen from django/core/management/commands/test.py
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=1, interactive=True)
+    # failures = test_runner.run_tests(['tests.test_scss.FindersImportTest.test_relative_import_with_filename'])
     failures = test_runner.run_tests(['tests'])
     sys.exit(bool(failures))

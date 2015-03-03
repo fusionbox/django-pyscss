@@ -11,7 +11,7 @@ def read(fname):
 
 install_requires = [
     'Django>=1.4',
-    'pyScss>=1.2.0,<1.3.0',
+    'pyScss>=1.3.4',
 ]
 tests_require = [
     'Pillow',
@@ -47,6 +47,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        #'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
     ],
 )

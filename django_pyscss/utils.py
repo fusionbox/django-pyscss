@@ -1,7 +1,9 @@
 import fnmatch
 import os
 
+from django.conf import settings
 from django.contrib.staticfiles import finders
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 
 def find_all_files(glob):
@@ -17,3 +19,29 @@ def find_all_files(glob):
                                                 or '', path),
                                    glob):
                 yield path, storage
+
+
+def get_file_from_storage(filename):
+    try:
+        filename = staticfiles_storage.path(filename)
+    except NotImplementedError:
+        # remote storages don't implement path
+        pass
+    if staticfiles_storage.exists(filename):
+        return filename, staticfiles_storage
+    else:
+        return None, None
+
+
+def get_file_from_finders(filename):
+    for file_and_storage in find_all_files(filename):
+        return file_and_storage
+    return None, None
+
+
+def get_file_and_storage(filename):
+    # TODO: the switch probably shouldn't be on DEBUG
+    if settings.DEBUG:
+        return get_file_from_finders(filename)
+    else:
+        return get_file_from_storage(filename)

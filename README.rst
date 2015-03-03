@@ -11,6 +11,23 @@ A collection of tools for making it easier to use pyScss within Django.
    :target: https://coveralls.io/r/fusionbox/django-pyscss
    :alt: Coverage Status
 
+
+.. note::
+
+    This version only supports pyScss 1.3.4 and greater. For pyScss 1.2 support,
+    you can use the 1.x series of django-pyscss.
+
+
+Installation
+============
+
+django-pyscss supports Django 1.4+, and Pythons 2 and 3.
+
+You may install django-pyscss off of PyPI::
+
+    pip install django-pyscss
+
+
 Why do we need this?
 ====================
 
@@ -20,7 +37,7 @@ This app smooths over a lot of things when dealing with pyScss in Django.  It
   can import SCSS files from any app (or any file that's findable by the
   STATICFILES_FINDERS) with no hassle.
 
-- Configures pyScss to work with the staticfiles app for it's image functions
+- Configures pyScss to work with the staticfiles app for its image functions
   (e.g. inline-image and sprite-map).
 
 - It provides a django-compressor precompile filter class so that you can
@@ -34,41 +51,52 @@ This app smooths over a lot of things when dealing with pyScss in Django.  It
 Rendering SCSS manually
 =======================
 
-You can render SCSS manually from a string like this::
+You can render SCSS manually from a string like this:
 
-    from django_pyscss.scss import DjangoScss
+.. code-block:: python
 
-    compiler = DjangoScss()
-    compiler.compile(scss_string=".foo { color: green; }")
+    from django_pyscss import DjangoScssCompiler
 
-You can render SCSS from a file like this::
+    compiler = DjangoScssCompiler()
+    compiler.compile_string(".foo { color: green; }")
 
-    from django_pyscss.scss import DjangoScss
+You can render SCSS from a file like this:
 
-    compiler = DjangoScss()
-    compiler.compile(scss_file='css/styles.scss')
+.. code-block:: python
+
+    from django_pyscss import DjangoScssCompiler
+
+    compiler = DjangoScssCompiler()
+    compiler.compile('css/styles.scss')
 
 The file needs to be able to be located by staticfiles finders in order to be
 used.
 
+The ``DjangoScssCompiler`` class is a subclass of ``scss.Compiler`` that
+injects the ``DjangoExtension``. ``DjangoExtension`` is what overrides the
+import mechanism.
 
-.. class:: django_pyscss.scss.DjangoScss
+``DjangoScssCompiler`` also turns on the CompassExtension by default, if you
+wish to turn this off you do so:
 
-    A subclass of :class:`scss.Scss` that uses the Django staticfiles storage
-    and finders instead of the filesystem.  This obsoletes the load_paths
-    option that was present previously by searching instead in your staticfiles
-    directories.
+.. code-block:: python
 
-    In DEBUG mode, DjangoScss will search using all of the finders to find the
-    file.  If you are not in DEBUG mode, it assumes you have run collectstatic
-    and will only use staticfiles_storage to find the file.
+    from django_pyscss import DjangoScssCompiler
+    from django_pyscss.extensions.django import DjangoExtension
+
+    compiler = DjangoScssCompiler(extensions=[DjangoExtension])
+
+For a list of options that ``DjangoScssCompiler`` accepts, please see the
+pyScss `API documentation <http://pyscss.readthedocs.org/en/latest/python-api.html#new-api>`_.
 
 
-Using in conjunction with django-compressor.
-============================================
+Using in conjunction with django-compressor
+===========================================
 
 django-pyscss comes with support for django-compressor.  All you have to do is
-add it to your ``COMPRESS_PRECOMPILERS`` setting. ::
+add it to your ``COMPRESS_PRECOMPILERS`` setting. :
+
+.. code-block:: python
 
     COMPRESS_PRECOMPILERS = (
         # ...
@@ -76,11 +104,36 @@ add it to your ``COMPRESS_PRECOMPILERS`` setting. ::
         # ...
     )
 
-Then you can just use SCSS like you would use CSS normally. ::
+Then you can just use SCSS like you would use CSS normally. :
+
+.. code-block:: html+django
 
     {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.css' %}">
     {% endcompress %}
+
+If you wish to provide your own compiler instance (for example if you wanted to
+change some settings on the ``DjangoScssCompiler``), you can subclass
+``DjangoScssFilter``. :
+
+.. code-block:: python
+
+    # myproject/scss_filter.py
+    from django_pyscss import DjangoScssCompiler
+    from django_pyscss.compressor import DjangoScssFilter
+
+    class MyDjangoScssFilter(DjangoScssFilter):
+        compiler = DjangoScssCompiler(
+            # Example configuration
+            output_style='compressed',
+        )
+
+    # settings.py
+    COMPRESS_PRECOMPILERS = (
+        # ...
+        ('text/x-scss', 'myproject.scss_filter.MyDjangoScssFilter'),
+        # ...
+    )
 
 
 Running the tests
