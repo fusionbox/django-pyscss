@@ -31,7 +31,7 @@ setup(
     url="https://github.com/fusionbox/django-pyscss",
     keywords="django css scss sass pyscss compressor",
     description=__doc__,
-    long_description=read('README.rst'),
+    long_description=read('README.rst') + '\n\n' + read('CHANGELOG.rst'),
     packages=[package for package in find_packages() if package.startswith('django_pyscss')],
     install_requires=install_requires,
     tests_require=tests_require,
