@@ -2,7 +2,7 @@ CHANGELOG
 ---------
 
 
-2.0.0 (unreleased)
+2.0.0 (2015-04-22)
 ==================
 
 - Added support for pyScss 1.3 and Python 3.
