@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-import subprocess
 import os
 
 __doc__ = "Makes it easier to use PySCSS in Django."
@@ -21,22 +20,12 @@ tests_require = [
 ]
 
 
-version = (1, 1, 0, 'alpha')
+version = '2.0.0.dev0'
 
-
-def get_version():
-    number = '.'.join(map(str, version[:3]))
-    stage = version[3]
-    if stage == 'final':
-        return number
-    elif stage == 'alpha':
-        process = subprocess.Popen('git rev-parse HEAD'.split(), stdout=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-        return number + '-' + stdout.strip()[:8]
 
 setup(
     name='django-pyscss',
-    version=get_version(),
+    version=version,
     author="Fusionbox, Inc.",
     author_email="programmers@fusionbox.com",
     url="https://github.com/fusionbox/django-pyscss",
