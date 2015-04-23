@@ -13,6 +13,12 @@ install_requires = [
     'Django>=1.4',
     'pyScss>=1.3.4',
 ]
+
+try:
+    import pathlib
+except ImportError:
+    install_requires.append('pathlib')
+
 tests_require = [
     'Pillow',
     'django-compressor>=1.3',
