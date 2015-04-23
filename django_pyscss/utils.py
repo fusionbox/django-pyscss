@@ -1,7 +1,6 @@
 import fnmatch
 import os
 
-from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
 
@@ -40,8 +39,10 @@ def get_file_from_finders(filename):
 
 
 def get_file_and_storage(filename):
-    # TODO: the switch probably shouldn't be on DEBUG
-    if settings.DEBUG:
-        return get_file_from_finders(filename)
-    else:
-        return get_file_from_storage(filename)
+    name, storage = get_file_from_finders(filename)
+    # get_file_from_finders could fail in production if code is a deployed as a
+    # package without it's package_data. In that case, we'd assume that
+    # collectstatic had been run and we can get the file from storage.
+    if storage is None:
+        name, storage = get_file_from_storage(filename)
+    return name, storage

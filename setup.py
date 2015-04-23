@@ -23,6 +23,7 @@ tests_require = [
     'Pillow',
     'django-compressor>=1.3',
     'django-discover-runner',
+    'mock',
 ]
 
 

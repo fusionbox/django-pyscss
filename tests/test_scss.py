@@ -1,8 +1,8 @@
 import os
 import re
+import mock
 
 from django.test import TestCase
-from django.test.utils import override_settings
 from django.conf import settings
 
 from scss.errors import SassImportError
@@ -99,12 +99,14 @@ class ImportTestMixin(CompilerTestMixin):
         self.assertEqual(clean_css(actual), clean_css(PATH_CONFLICT_CONTENTS))
 
 
-@override_settings(DEBUG=True)
 class FindersImportTest(ImportTestMixin, NoCollectStaticTestCase):
     pass
 
 
-@override_settings(DEBUG=False)
+# Emulate the condition were collectstatic was run but the source files are no
+# longer available.
+@mock.patch('django_pyscss.utils.get_file_from_finders',
+            new=mock.MagicMock(return_value=(None, None)))
 class StorageImportTest(ImportTestMixin, CollectStaticTestCase):
     pass
 
