@@ -2,7 +2,7 @@ CHANGELOG
 ---------
 
 
-2.0.1 (unreleased)
+2.0.1 (2015-04-23)
 ==================
 
 - Explicitly depend on pathlib, instead of assuming pyScss will require it. [#33]
