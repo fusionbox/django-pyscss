@@ -103,7 +103,7 @@ class FindersImportTest(ImportTestMixin, NoCollectStaticTestCase):
     pass
 
 
-# Emulate the condition were collectstatic was run but the source files are no
+# Emulate the condition where collectstatic was run but the source files are no
 # longer available.
 @mock.patch('django_pyscss.utils.get_file_from_finders',
             new=mock.MagicMock(return_value=(None, None)))

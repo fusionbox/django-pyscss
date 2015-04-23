@@ -2,10 +2,11 @@ CHANGELOG
 ---------
 
 
-2.1.0 (unreleased)
+2.0.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Explicitly depend on pathlib, instead of assuming pyScss will require it. [#33]
+- Fixed cases where DEBUG is False but collectstatic hasn't been run (common in tests).
 
 
 2.0.0 (2015-04-22)
