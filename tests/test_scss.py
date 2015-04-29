@@ -32,6 +32,11 @@ with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'css_f
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', '_baz.scss')) as f:
     BAZ_CONTENTS = f.read()
 
+with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'sub', '_spam.scss')) as f:
+    SPAM_CONTENTS = f.read()
+
+BAZ_CONTENTS = BAZ_CONTENTS.replace('@import "sub/spam";', SPAM_CONTENTS)
+
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'path_conflict.scss')) as f:
     PATH_CONFLICT_CONTENTS = f.read()
 

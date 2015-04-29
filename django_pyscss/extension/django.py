@@ -29,6 +29,8 @@ class DjangoExtension(CoreExtension):
             search_path = original_path.relative_to('/').parent
         elif rule.source_file.origin:
             search_path = rule.source_file.origin
+            if original_path.parent:
+                search_path = search_path / original_path.parent
         else:
             search_path = original_path.parent
 
