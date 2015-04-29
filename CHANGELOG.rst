@@ -2,7 +2,7 @@ CHANGELOG
 ---------
 
 
-2.0.2 (unreleased)
+2.0.2 (2015-04-29)
 ==================
 
 - Fixed bug with relative imports [#34, #35 r1chardj0n3s]
