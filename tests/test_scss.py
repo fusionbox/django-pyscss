@@ -40,6 +40,9 @@ BAZ_CONTENTS = BAZ_CONTENTS.replace('@import "sub/spam";', SPAM_CONTENTS)
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'path_conflict.scss')) as f:
     PATH_CONFLICT_CONTENTS = f.read()
 
+with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'dot.file.scss')) as f:
+    DOT_FILE_CONTENTS = f.read()
+
 
 class CompilerTestMixin(object):
     def setUp(self):
@@ -103,6 +106,17 @@ class ImportTestMixin(CompilerTestMixin):
         actual = self.compiler.compile_string('@import "/css/path_conflict";')
         self.assertEqual(clean_css(actual), clean_css(PATH_CONFLICT_CONTENTS))
 
+    def test_import_dots_without_extension(self):
+        actual = self.compiler.compile_string('@import "/css/dot.file";')
+        self.assertEqual(clean_css(actual), clean_css(DOT_FILE_CONTENTS))
+
+    def test_import_dots_with_extension(self):
+        actual = self.compiler.compile_string('@import "/css/dot.file.scss";')
+        self.assertEqual(clean_css(actual), clean_css(DOT_FILE_CONTENTS))
+
+    def test_import_from_parent(self):
+        actual = self.compiler.compile_string('@import "/css/sub/from_parent";')
+        self.assertEqual(clean_css(actual), clean_css(BAZ_CONTENTS))
 
 class FindersImportTest(ImportTestMixin, NoCollectStaticTestCase):
     pass

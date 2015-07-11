@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+import os
+
 from itertools import product
 from pathlib import PurePath
 
@@ -19,10 +21,11 @@ class DjangoExtension(CoreExtension):
         """
         original_path = PurePath(name)
 
-        if original_path.suffix:
-            search_exts = [original_path.suffix]
+        search_exts = list(compilation.compiler.dynamic_extensions)
+        if original_path.suffix and original_path.suffix in search_exts:
+            basename = original_path.stem
         else:
-            search_exts = compilation.compiler.dynamic_extensions
+            basename = original_path.name
 
         if original_path.is_absolute():
             # Remove the beginning slash
@@ -30,11 +33,9 @@ class DjangoExtension(CoreExtension):
         elif rule.source_file.origin:
             search_path = rule.source_file.origin
             if original_path.parent:
-                search_path = search_path / original_path.parent
+                search_path = os.path.normpath(str(search_path / original_path.parent))
         else:
             search_path = original_path.parent
-
-        basename = original_path.stem
 
         for prefix, suffix in product(('_', ''), search_exts):
             filename = PurePath(prefix + basename + suffix)
