@@ -22,9 +22,11 @@ config.STATIC_ROOT = find_all_files
 config.STATIC_URL = staticfiles_storage.url('scss/')
 
 # This is where PyScss places the sprite files.
-config.ASSETS_ROOT = os.path.join(settings.STATIC_ROOT, 'scss', 'assets')
+config.ASSETS_ROOT = os.path.join(settings.STATIC_ROOT,
+                                  settings.COMPRESS_OUTPUT_DIR, 'assets')
 # PyScss expects a trailing slash.
-config.ASSETS_URL = staticfiles_storage.url('scss/assets/')
+config.ASSETS_URL = staticfiles_storage.url(settings.COMPRESS_OUTPUT_DIR +
+                                            '/assets/')
 
 
 class DjangoScssCompiler(Compiler):
