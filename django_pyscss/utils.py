@@ -46,3 +46,8 @@ def get_file_and_storage(filename):
     if storage is None:
         name, storage = get_file_from_storage(filename)
     return name, storage
+
+
+def get_searched_paths(filename):
+    finders.find(filename)
+    return finders.searched_locations
