@@ -164,4 +164,4 @@ class AssetsTest(CompilerTestMixin, TestCase):
         actual = self.compiler.compile_string(SPRITE_MAP)
         # pyScss puts a cachebuster query string on the end of the URLs, lets
         # just check that it made the file that we expected.
-        self.assertTrue(re.search(r'url\(/static/scss/assets/images_icons-.+\.png\?_=\d+', actual))
+        self.assertTrue(re.search(r'url\(/static/CACHE/assets/images_icons-.+\.png\?_=\d+', actual))
