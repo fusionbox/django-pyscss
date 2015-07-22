@@ -10,7 +10,9 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 
 from scss import Compiler, config
 from scss.extension.compass import CompassExtension
+from scss.namespace import Namespace
 from scss.source import SourceFile
+from scss.types import Boolean
 
 from .extension.django import DjangoExtension
 from .utils import find_all_files, get_file_and_storage
@@ -30,6 +32,10 @@ config.ASSETS_URL = staticfiles_storage.url('scss/assets/')
 class DjangoScssCompiler(Compiler):
     def __init__(self, **kwargs):
         kwargs.setdefault('extensions', (DjangoExtension, CompassExtension))
+        namespace = kwargs.pop('namespace', Namespace())
+        if '$debug' not in namespace.variables:
+            namespace.set_variable('$debug', Boolean(settings.DEBUG))
+        kwargs.update(namespace=namespace)
         if not os.path.exists(config.ASSETS_ROOT):
             os.makedirs(config.ASSETS_ROOT)
         super(DjangoScssCompiler, self).__init__(**kwargs)

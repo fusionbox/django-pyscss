@@ -3,9 +3,12 @@ import re
 import mock
 
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.conf import settings
 
 from scss.errors import SassImportError
+from scss.namespace import Namespace
+from scss.types import Boolean
 
 from django_pyscss import DjangoScssCompiler
 
@@ -42,6 +45,9 @@ with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'path_
 
 with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'dot.file.scss')) as f:
     DOT_FILE_CONTENTS = f.read()
+
+with open(os.path.join(settings.BASE_DIR, 'testproject', 'static', 'css', 'namespace_debug.scss')) as f:
+    NAMESPACE_DEBUG_CONTENTS = f.read()
 
 
 class CompilerTestMixin(object):
@@ -165,3 +171,36 @@ class AssetsTest(CompilerTestMixin, TestCase):
         # pyScss puts a cachebuster query string on the end of the URLs, lets
         # just check that it made the file that we expected.
         self.assertTrue(re.search(r'url\(/static/scss/assets/images_icons-.+\.png\?_=\d+', actual))
+
+
+NAMESPACE_DEBUG_TRUE_CONTENTS = """
+.debug {
+  visibility: visible;
+}
+"""
+
+NAMESPACE_DEBUG_FALSE_CONTENTS = """
+.debug {
+  visibility: hidden;
+}
+"""
+
+
+@override_settings(DEBUG=True)
+class NamespaceTest(TestCase):
+    def test_debug_namespace(self):
+        compiler = DjangoScssCompiler()
+        actual = compiler.compile_string(NAMESPACE_DEBUG_CONTENTS)
+        self.assertEqual(clean_css(actual), clean_css(NAMESPACE_DEBUG_TRUE_CONTENTS))
+
+    def test_debug_namespace_override(self):
+        compiler = DjangoScssCompiler()
+        actual = compiler.compile_string('$debug:false;\n' + NAMESPACE_DEBUG_CONTENTS)
+        self.assertEqual(clean_css(actual), clean_css(NAMESPACE_DEBUG_FALSE_CONTENTS))
+
+    def test_debug_namespace_injection(self):
+        namespace = Namespace()
+        namespace.set_variable('$debug', Boolean(False))
+        compiler = DjangoScssCompiler(namespace=namespace)
+        actual = compiler.compile_string(NAMESPACE_DEBUG_CONTENTS)
+        self.assertEqual(clean_css(actual), clean_css(NAMESPACE_DEBUG_FALSE_CONTENTS))

@@ -1,0 +1,3 @@
+.debug {
+  visibility: if($debug, visible, hidden);
+}
