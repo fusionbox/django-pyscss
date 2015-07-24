@@ -103,8 +103,8 @@ You can then use the ``$debug`` variable anywhere in your SCSS files.:
       visibility: if($debug, visible, hidden);
     }
 
-Note that you should omit anything you are not comfortable with people seeing in your html and
-compiled stylesheets, as debug-specific rules and declarations will still be viewable in them.
+Note that you should still omit anything you are not comfortable with people seeing in your
+markup and compiled stylesheets, as that content will still be available in the HTML.
 
 For a list of options that ``DjangoScssCompiler`` accepts, please see the
 pyScss `API documentation <http://pyscss.readthedocs.org/en/latest/python-api.html#new-api>`_.
