@@ -7,10 +7,12 @@ from django.test.utils import override_settings
 from django.conf import settings
 
 from scss.errors import SassImportError
+from scss.extension.compass import CompassExtension
 from scss.namespace import Namespace
 from scss.types import Boolean
 
 from django_pyscss import DjangoScssCompiler
+from django_pyscss.extension import DjangoExtension, DjangoDebugExtension
 
 from tests.utils import clean_css, CollectStaticTestCase, NoCollectStaticTestCase
 
@@ -187,20 +189,23 @@ NAMESPACE_DEBUG_FALSE_CONTENTS = """
 
 
 @override_settings(DEBUG=True)
-class NamespaceTest(TestCase):
+class DebugExtensionTest(TestCase):
     def test_debug_namespace(self):
-        compiler = DjangoScssCompiler()
+        compiler = DjangoScssCompiler(extensions=(DjangoDebugExtension, DjangoExtension, CompassExtension))
         actual = compiler.compile_string(NAMESPACE_DEBUG_CONTENTS)
         self.assertEqual(clean_css(actual), clean_css(NAMESPACE_DEBUG_TRUE_CONTENTS))
 
-    def test_debug_namespace_override(self):
-        compiler = DjangoScssCompiler()
+    def test_debug_namespace_sass_override(self):
+        compiler = DjangoScssCompiler(extensions=(DjangoDebugExtension, DjangoExtension, CompassExtension))
         actual = compiler.compile_string('$debug:false;\n' + NAMESPACE_DEBUG_CONTENTS)
         self.assertEqual(clean_css(actual), clean_css(NAMESPACE_DEBUG_FALSE_CONTENTS))
 
-    def test_debug_namespace_injection(self):
+    def test_debug_namespace_kwarg_override(self):
         namespace = Namespace()
         namespace.set_variable('$debug', Boolean(False))
-        compiler = DjangoScssCompiler(namespace=namespace)
+        compiler = DjangoScssCompiler(
+            extensions=(DjangoDebugExtension, DjangoExtension, CompassExtension),
+            namespace=namespace,
+        )
         actual = compiler.compile_string(NAMESPACE_DEBUG_CONTENTS)
         self.assertEqual(clean_css(actual), clean_css(NAMESPACE_DEBUG_FALSE_CONTENTS))
