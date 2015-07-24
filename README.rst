@@ -82,9 +82,29 @@ wish to turn this off you do so:
 .. code-block:: python
 
     from django_pyscss import DjangoScssCompiler
-    from django_pyscss.extensions.django import DjangoExtension
+    from django_pyscss.extension import DjangoExtension
 
     compiler = DjangoScssCompiler(extensions=[DjangoExtension])
+
+``DjangoScssCompiler`` can optionally be used with an extension that injects Django's
+``DEBUG`` setting as a variable into the namespace of your SCSS files.:
+
+.. code-block:: python
+
+    from django_pyscss.extension import DjangoExtension, DjangoDebugExtension
+
+    compiler = DjangoScssCompiler(extensions=[DjangoExtension, DjangoDebugExtension])
+
+You can then use the ``$debug`` variable anywhere in your SCSS files.:
+
+.. code-block:: scss
+
+    .debug {
+      visibility: if($debug, visible, hidden);
+    }
+
+Note that you should still omit anything you are not comfortable with people seeing in your
+markup and compiled stylesheets, as that content will still be available in the HTML.
 
 For a list of options that ``DjangoScssCompiler`` accepts, please see the
 pyScss `API documentation <http://pyscss.readthedocs.org/en/latest/python-api.html#new-api>`_.

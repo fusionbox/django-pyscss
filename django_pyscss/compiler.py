@@ -12,7 +12,7 @@ from scss import Compiler, config
 from scss.extension.compass import CompassExtension
 from scss.source import SourceFile
 
-from .extension.django import DjangoExtension
+from .extension import DjangoExtension
 from .utils import find_all_files, get_file_and_storage
 
 
