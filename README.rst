@@ -103,7 +103,7 @@ You can then use the ``$debug`` variable anywhere in your SCSS files.:
       visibility: if($debug, visible, hidden);
     }
 
-Note that you should omit anything you are not comfortable with people seeing in your
+Note that you should omit anything you are not comfortable with people seeing in your html and
 compiled stylesheets, as debug-specific rules and declarations will still be viewable in them.
 
 For a list of options that ``DjangoScssCompiler`` accepts, please see the
