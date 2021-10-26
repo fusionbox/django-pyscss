@@ -4,14 +4,14 @@ from tests.utils import CollectStaticTestCase
 
 
 APP2_LINK_TAG = """
-{% load staticfiles compress %}
+{% load static compress %}
 {% compress css %}
 <link rel="stylesheet" type="text/x-scss" href="{% static 'css/app2.scss' %}">
 {% endcompress %}
 """
 
 IMPORT_APP2_STYLE_TAG = """
-{% load staticfiles compress %}
+{% load static compress %}
 {% compress css %}
 <style type="text/x-scss">
 @import "css/app2.scss";
