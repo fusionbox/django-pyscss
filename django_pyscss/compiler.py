@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import os
 from pathlib import PurePath
 
-from django.utils.six.moves import StringIO
+from six.moves import StringIO
 
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
