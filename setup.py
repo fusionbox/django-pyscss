@@ -27,7 +27,7 @@ tests_require = [
 ]
 
 
-version = '2.0.3.dev0'
+version = '2.0.3'
 
 
 setup(

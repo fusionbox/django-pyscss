@@ -2,7 +2,7 @@ CHANGELOG
 ---------
 
 
-2.0.3 (unreleased)
+2.0.3 (2023-08-30)
 ==================
 
 - Support for Django 4.2. Drop support for Python 2.
