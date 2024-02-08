@@ -34,7 +34,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,19 +46,19 @@ INSTALLED_APPS = (
 
     'testproject.testapp1',
     'testproject.testapp2',
-)
+]
 
 if DJANGO_VERSION[:2] < (1, 6):
     INSTALLED_APPS += ('discover_runner', )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'testproject.urls'
 
@@ -131,3 +131,10 @@ LOGGING = {
         },
     }
 }
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+]

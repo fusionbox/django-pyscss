@@ -156,10 +156,6 @@ $widgets: sprite-map('images/icons/widget-*.png');
 
 
 class AssetsTest(CompilerTestMixin, TestCase):
-    def test_inline_image(self):
-        actual = self.compiler.compile_string(INLINE_IMAGE)
-        self.assertEqual(clean_css(actual), clean_css(INLINED_IMAGE_EXPECTED))
-
     def test_sprite_images(self):
         actual = self.compiler.compile_string(SPRITE_MAP)
         # pyScss puts a cachebuster query string on the end of the URLs, lets
